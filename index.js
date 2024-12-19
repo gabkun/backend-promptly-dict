@@ -26,7 +26,7 @@ const app = express();
 
 // Configure CORS
 app.use(cors({
-  origin: 'https://promptly-dict-ncl9.vercel.app',
+  origin: 'https://promptly-desktop.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
