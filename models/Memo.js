@@ -25,7 +25,6 @@ const memoSchema = new mongoose.Schema({
     type: [String],
     validate: {
       validator: function(images) {
-        // Only validate images if memoType is 1 and images are provided
         return !images || (Array.isArray(images) && images.every(img => typeof img === 'string'));
       },
       message: 'Images must be an array of strings if provided.',

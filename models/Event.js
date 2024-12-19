@@ -2,32 +2,31 @@ import mongoose from "mongoose";
 
 const eventPlannerSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId, // Reference to a user in another collection
+    type: mongoose.Schema.Types.ObjectId, 
     required: true,
-    ref: 'User', // Name of the referenced collection
+    ref: 'User', 
   },
   eventName: {
     type: String,
     required: true,
     trim: true,
-    maxlength: 100, // Optional: limit the length of the event name
+    maxlength: 100, 
   },
   description: {
     type: String,
     required: true,
     trim: true,
-    maxlength: 500, // Optional: limit the length of the description
+    maxlength: 500, 
   },
   eventDate: {
     type: Date,
     required: true,
   },
   eventTime: {
-    type: String, // Use a string to capture time in HH:MM format or other custom formats
+    type: String, 
     required: true,
     validate: {
       validator: function (v) {
-        // Regex to validate time in HH:MM 24-hour format
         return /^([0-1]\d|2[0-3]):([0-5]\d)$/.test(v);
       },
       message: props => `${props.value} is not a valid time format! Use HH:MM.`

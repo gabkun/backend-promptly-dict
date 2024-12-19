@@ -2,7 +2,7 @@ import Memo from '../models/Memo.js';
 
 // Create a new memo
 const createMemo = async (req, res) => {
-  const files = req.files; // Retrieve uploaded files from the request
+  const files = req.files; 
   try {
     const { userId, title, memoType, description, additionalNotes } = req.body;
 
@@ -12,30 +12,22 @@ const createMemo = async (req, res) => {
     if (!title) {
       return res.status(400).json({ message: 'Title is required.' });
     }
-
-    // For text memos, description is mandatory
     if (memoType === '1' && !description) {
       return res.status(400).json({ message: 'Text Memo (memoType 1) requires a description.' });
     }
 
-    // Handling memoType 1 (Text Memo)
     if (memoType === '1') {
-      if (!files || files.length === 0) {
-        return res.status(400).json({ message: 'At least one image is required for Text Memo.' });
-      }
-
-      // Extract image file paths for text memo
-      const imagePaths = files.map((file) => file.path);
+      const imagePaths = files ? files.map((file) => file.path) : [];
 
       const newMemo = new Memo({
         userId,
         memoType,
         title,
         description,
-        images: imagePaths, // Store file paths for uploaded images
-        audio: undefined, // No audio for Text Memo
+        images: imagePaths, 
+        audio: undefined, 
         additionalNotes,
-        status: 'Text Memo', // Default status for memoType 1
+        status: 'Text Memo', 
       });
 
       const savedMemo = await newMemo.save();
@@ -46,24 +38,22 @@ const createMemo = async (req, res) => {
       });
     }
 
-    // Handling memoType 2 (Voice Memo)
     if (memoType === '2') {
       if (!files || files.length === 0) {
         return res.status(400).json({ message: 'Voice Memo requires an audio file.' });
       }
 
-      // Extract the audio file path for voice memo
       const audioFilePath = files[0].path;
 
       const newMemo = new Memo({
         userId,
         memoType,
         title,
-        description: undefined, // No description for Voice Memo
-        images: [], // No images for Voice Memo
-        audio: audioFilePath, // Store audio file path for voice memo
+        description: undefined, 
+        images: [], 
+        audio: audioFilePath, 
         additionalNotes,
-        status: 'Voice Memo', // Default status for memoType 2
+        status: 'Voice Memo', 
       });
 
       const savedMemo = await newMemo.save();
@@ -74,7 +64,6 @@ const createMemo = async (req, res) => {
       });
     }
 
-    // If memoType is not valid
     return res.status(400).json({ message: 'Invalid memoType.' });
 
   } catch (error) {
@@ -83,10 +72,8 @@ const createMemo = async (req, res) => {
   }
 };
 
-
 const getMemos = async (req, res) => {
   try {
-    // Populate the `userId` to include `username`
     const textMemos = await Memo.find({ memoType: 1 }).populate('userId', 'name');
     const voiceMemos = await Memo.find({ memoType: 2 }).populate('userId', 'name');
 
@@ -103,7 +90,7 @@ const getMemos = async (req, res) => {
 
 const getVoies = async (req, res) => {
   try {
-    const memos = await Memo.find({ memoType: '2' }); // Query to filter by memoType '1'
+    const memos = await Memo.find({ memoType: '2' }); 
 
     if (memos.length === 0) {
       return res.status(404).json({ message: 'No voice memos with memoType 1 found.' });
@@ -126,8 +113,6 @@ const getMemo = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ message: 'userId is required.' });
     }
-
-    // Fetch memos where userId matches and memoType is 1
     const memos = await Memo.find({ userId, memoType: 1 });
 
     if (!memos || memos.length === 0) {
@@ -148,20 +133,15 @@ const viewMemoDetails = async (req, res) => {
   try {
     const { memoId } = req.params;
 
-    // Ensure memoId is provided
     if (!memoId) {
       return res.status(400).json({ message: 'memoId is required.' });
     }
-
-    // Fetch the memo by its ID
     const memo = await Memo.findById(memoId);
 
-    // Check if memo exists
     if (!memo) {
       return res.status(404).json({ message: 'Memo not found.' });
     }
 
-    // Return the memo details
     res.status(200).json({
       message: 'Memo retrieved successfully.',
       memo,
@@ -179,15 +159,12 @@ const getVoice = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ message: 'userId is required.' });
     }
-
-    // Fetch memos where userId matches and memoType is 2
     const memos = await Memo.find({ userId, memoType: 2 });
 
     if (!memos || memos.length === 0) {
       return res.status(404).json({ message: 'No memos found for this user with memoType 2.' });
     }
 
-    // Map memos to include consistent filePath
     const processedMemos = memos.map((memo) => ({
       id: memo._id || null,
       title: memo.title || null,

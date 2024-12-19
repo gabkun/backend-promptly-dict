@@ -5,17 +5,17 @@ import path from 'path';
 import { get } from 'http';
 
 const storage = multer.diskStorage({
-    destination: path.join('uploads'), // Save files in the 'uploads' directory
+    destination: path.join('uploads'), 
     filename: function (req, file, cb) {
       const timestamp = Date.now();
       const uniqueName = `${timestamp}-${file.originalname}`;
-      cb(null, uniqueName); // Add a timestamp to ensure unique file names
+      cb(null, uniqueName); 
     },
   });
   
   const upload = multer({
     storage: storage,
-    limits: { fieldSize: 25 * 1024 * 1024 }, // 25 MB file size limit
+    limits: { fieldSize: 25 * 1024 * 1024 }, 
   });
 
 const router = express.Router();

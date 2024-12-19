@@ -84,7 +84,7 @@ const register = async (req, res) => {
   };
   const getUsers = async (req, res) => {
     try {
-      const role = req.query.role || 'user'; // Default to 'user' if no role is provided
+      const role = req.query.role || 'user'; 
       const users = await User.find({ role });
   
       res.status(200).json({
@@ -150,10 +150,9 @@ const register = async (req, res) => {
 
   const deleteUserAndMemos = async (req, res) => {
     try {
-      const { userId } = req.params;  // Get the userId from the route params
+      const { userId } = req.params;  
   
-      // First, delete the memos associated with the user
-      const deletedMemos = await Memo.deleteMany({ userId }); // Adjust field name if necessary
+      const deletedMemos = await Memo.deleteMany({ userId }); 
       
       // Now, delete the user
       const deletedUser = await User.findByIdAndDelete(userId);
